@@ -69,6 +69,7 @@ local function GetClosestPlayer()
 		RequiredDistance = (Environment.FOVSettings.Enabled and Environment.FOVSettings.Amount or 2000)
 
 		for i, v in pairs(workspace:GetChildren()) do
+			if v:IsA("Model") then
 			if Players:FindFirstChild(v.Name) and v.Name ~= Players.LocalPlayer.Name then
 				if v.WorldCharacter and v.WorldCharacter:FindFirstChild(Environment.Settings.LockPart) then
 					if Environment.Settings.TeamCheck and v.Team == LocalPlayer.Team then continue end
@@ -84,6 +85,7 @@ local function GetClosestPlayer()
 					end
 				end
 			end
+		    end
 		end
 	elseif (Vector2(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y) - Vector2(Camera:WorldToViewportPoint(Environment.Locked.WorldCharacter[Environment.Settings.LockPart].Position).X, Camera:WorldToViewportPoint(Environment.Locked.WorldCharacter[Environment.Settings.LockPart].Position).Y)).Magnitude > RequiredDistance then
 		CancelLock()

@@ -614,7 +614,7 @@ do
 	notification.Text.Text = text
 	
 	local padding = 10
-	local textSize = game:GetService(" TextService"):GetTextSize(text, 12, Enum.Font.Gotham, Vector2.new(math.huge, 16))
+	local textSize = game:GetService("TextService"):GetTextSize(text, 12, Enum.Font.Gotham, Vector2.new(math.huge, 16))
 	
 	notification.Position = library.lastNotification or UDim2.new(0, padding, 1, -(notification.AbsoluteSize.Y + padding))
 	notification.Size = UDim2.new(0, 0, 0, 60)

@@ -500,7 +500,7 @@ do
 	
 	-- new modules
 	
-	function library:Notify(title, text, callback)
+	function library:Notify(title, text, callback, timeduration)
 	
 	-- overwrite last notification
 	if self.activeNotification then
@@ -565,7 +565,7 @@ do
 	
 	-- Only create buttons if a callback is provided
 	if callback then
-		table.insert(notification, utility:Create("ImageButton", {
+		local acceptButton = utility:Create("ImageButton", {
 			Name = "Accept",
 			BackgroundTransparency = 1,
 			Position = UDim2.new(1, -26, 0, 8),
@@ -573,9 +573,9 @@ do
 			Image = "rbxassetid://5012538259",
 			ImageColor3 = themes.TextColor,
 			ZIndex = 4
-		}))
+		})
 
-		table.insert(notification, utility:Create("ImageButton", {
+		local declineButton = utility:Create("ImageButton", {
 			Name = "Decline",
 			BackgroundTransparency = 1,
 			Position = UDim2.new(1, -26, 1, -24),
@@ -583,7 +583,24 @@ do
 			Image = "rbxassetid://5012538583",
 			ImageColor3 = themes.TextColor,
 			ZIndex = 4
-		}))
+		})
+
+		acceptButton.Parent = notification
+		declineButton.Parent = notification
+
+		acceptButton.MouseButton1Click:Connect(function()
+			if callback then
+				callback(true)
+			end
+			close()
+		end)
+
+		declineButton.MouseButton1Click:Connect(function()
+			if callback then
+				callback(false)
+			end
+			close()
+		end)
 	end
 	
 	-- dragging
@@ -597,12 +614,12 @@ do
 	notification.Text.Text = text
 	
 	local padding = 10
-	local textSize = game:GetService("TextService"):GetTextSize(text, 12, Enum.Font.Gotham, Vector2.new(math.huge, 16))
+	local textSize = game:GetService(" TextService"):GetTextSize(text, 12, Enum.Font.Gotham, Vector2.new(math.huge, 16))
 	
 	notification.Position = library.lastNotification or UDim2.new(0, padding, 1, -(notification.AbsoluteSize.Y + padding))
 	notification.Size = UDim2.new(0, 0, 0, 60)
 	
-	utility:Tween(notification, {Size = UDim2.new(0, textSize.X + 70, 0, 60)}, 0.2)
+	utility:Tween(notification , {Size = UDim2.new(0, textSize.X + 70, 0, 60)}, 0.2)
 	wait(0.2)
 	
 	notification.ClipsDescendants = false
@@ -638,32 +655,10 @@ do
 	
 	self.activeNotification = close
 	
-	if callback then
-		notification.Accept.MouseButton1Click:Connect(function()
-		
-			if not active then 
-				return
-			end
-			
-			if callback then
-				callback(true)
-			end
-			
-			close()
-		end)
-		
-		notification.Decline.MouseButton1Click:Connect(function()
-		
-			if not active then 
-				return
-			end
-			
-			if callback then
-				callback(false)
-			end
-			
-			close()
-		end)
+	-- auto-close after duration
+	if timeduration then
+		wait(timeduration)
+		close()
 	end
 end
 	
